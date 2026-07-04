@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react'
 
 export default function Dashboard() {
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    setIsVisible(true)
-  }, [])
+  const [activeSection, setActiveSection] = useState('hero')
 
   const menuItems = [
     {
@@ -14,61 +10,127 @@ export default function Dashboard() {
       price: '$4.50'
     },
     {
-      name: 'Velvet Latte',
-      description: 'Smooth espresso with silky steamed milk and a hint of vanilla',
+      name: 'Vanilla Bean Latte',
+      description: 'Smooth espresso with steamed milk and real vanilla bean',
       price: '$5.75'
     },
     {
       name: 'Cold Brew Explorer',
-      description: '24-hour steeped perfection served over ice with orange zest',
+      description: '24-hour steeped cold brew with a hint of maple sweetness',
       price: '$5.25'
     },
     {
-      name: 'Mocha Wanderer',
-      description: 'Espresso meets Belgian chocolate, topped with house-made whipped cream',
+      name: 'Mocha Destination',
+      description: 'Espresso meets Belgian chocolate and velvety steamed milk',
       price: '$6.00'
     }
   ]
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['hero', 'menu', 'contact']
+      const scrollPosition = window.scrollY + 100
+
+      for (const section of sections) {
+        const element = document.getElementById(section)
+        if (element) {
+          const offsetTop = element.offsetTop
+          const offsetHeight = element.offsetHeight
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section)
+            break
+          }
+        }
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
     <div className="min-h-screen bg-slate-900 text-white">
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center space-x-2">
+              <svg className="w-8 h-8 text-[#3b82f6]" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M2 21h18v-2H2v2zm2-3h14v-2H4v2zm-2-4h18v-2H2v2zm4-3h10V9H6v2zm-4-4h18V5H2v2z"/>
+              </svg>
+              <span className="text-xl font-bold">Bean Voyage</span>
+            </div>
+            <div className="hidden sm:flex items-center space-x-8">
+              <button
+                onClick={() => scrollToSection('hero')}
+                className={`transition-colors ${activeSection === 'hero' ? 'text-[#3b82f6]' : 'text-slate-300 hover:text-white'}`}
+              >
+                Home
+              </button>
+              <button
+                onClick={() => scrollToSection('menu')}
+                className={`transition-colors ${activeSection === 'menu' ? 'text-[#3b82f6]' : 'text-slate-300 hover:text-white'}`}
+              >
+                Menu
+              </button>
+              <button
+                onClick={() => scrollToSection('contact')}
+                className={`transition-colors ${activeSection === 'contact' ? 'text-[#3b82f6]' : 'text-slate-300 hover:text-white'}`}
+              >
+                Contact
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-4 py-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-900 opacity-90"></div>
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-[#3b82f6] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-amber-600 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-pulse" style={{ animationDelay: '1s' }}></div>
+      <section id="hero" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"></div>
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-[#3b82f6] rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-amber-600 rounded-full blur-3xl"></div>
         </div>
         
-        <div className={`relative z-10 text-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <div className="mb-6">
-            <svg className="w-20 h-20 mx-auto text-[#3b82f6]" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M2 21v-2h18v2H2zm2-4v-3q0-1.25.875-2.125T7 11h1V5q0-1.25.875-2.125T11 2h2q1.25 0 2.125.875T16 5v6h1q1.25 0 2.125.875T20 14v3H4zm5-6h6V5h-2v4h-2V5h-2v6z"/>
+        <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+          <div className="mb-8">
+            <svg className="w-24 h-24 mx-auto text-[#3b82f6] mb-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M18.5 3H6c-1.1 0-2 .9-2 2v5.71c0 3.83 2.95 7.18 6.78 7.29 3.96.12 7.22-3.06 7.22-7v-1h.5c1.93 0 3.5-1.57 3.5-3.5S20.43 3 18.5 3zM16 10c0 2.21-1.79 4-4 4s-4-1.79-4-4V5h8v5zm2.5-3H18V5h.5c.83 0 1.5.67 1.5 1.5S19.33 8 18.5 8zM4 19h16v2H4v-2z"/>
             </svg>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold mb-4 tracking-tight">
+          
+          <h1 className="text-5xl sm:text-7xl font-bold mb-6 tracking-tight">
             Bean <span className="text-[#3b82f6]">Voyage</span>
           </h1>
-          <p className="text-xl md:text-2xl text-slate-300 mb-8 font-light">
-            Where Every Cup is a Journey
+          
+          <p className="text-xl sm:text-2xl text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed">
+            Embark on a journey of extraordinary flavors. Every cup tells a story, every sip an adventure.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a 
-              href="#menu" 
-              className="px-8 py-3 bg-[#3b82f6] hover:bg-blue-600 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/25"
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button
+              onClick={() => scrollToSection('menu')}
+              className="px-8 py-4 bg-[#3b82f6] hover:bg-blue-600 text-white font-semibold rounded-full transition-all transform hover:scale-105 shadow-lg shadow-blue-500/25"
             >
-              Explore Menu
-            </a>
-            <a 
-              href="#contact" 
-              className="px-8 py-3 border-2 border-slate-600 hover:border-[#3b82f6] rounded-full font-semibold transition-all duration-300"
+              Explore Our Menu
+            </button>
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="px-8 py-4 border-2 border-slate-600 hover:border-[#3b82f6] text-white font-semibold rounded-full transition-all"
             >
-              Find Us
-            </a>
+              Visit Us
+            </button>
           </div>
         </div>
 
-        <div className="absolute bottom-10 animate-bounce">
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
           <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
@@ -76,92 +138,59 @@ export default function Dashboard() {
       </section>
 
       {/* Menu Section */}
-      <section id="menu" className="py-20 px-4 bg-slate-800/50">
-        <div className="max-w-4xl mx-auto">
+      <section id="menu" className="py-24 px-4 sm:px-6 lg:px-8 bg-slate-800/50">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Our <span className="text-[#3b82f6]">Menu</span></h2>
-            <p className="text-slate-400 text-lg">Handcrafted beverages for the curious soul</p>
+            <h2 className="text-4xl sm:text-5xl font-bold mb-4">Our <span className="text-[#3b82f6]">Menu</span></h2>
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+              Crafted with passion, served with love. Each drink is a carefully curated experience.
+            </p>
           </div>
 
-          <div className="grid gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {menuItems.map((item, index) => (
-              <div 
+              <div
                 key={index}
-                className="group bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-[#3b82f6]/50 rounded-2xl p-6 md:p-8 transition-all duration-300 transform hover:-translate-y-1"
+                className="bg-slate-800/80 border border-slate-700 rounded-2xl p-8 hover:border-[#3b82f6]/50 transition-all hover:transform hover:scale-[1.02] group"
               >
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div className="flex-1">
-                    <h3 className="text-xl md:text-2xl font-semibold mb-2 group-hover:text-[#3b82f6] transition-colors">
-                      {item.name}
-                    </h3>
-                    <p className="text-slate-400">{item.description}</p>
-                  </div>
-                  <div className="text-2xl md:text-3xl font-bold text-[#3b82f6]">
-                    {item.price}
-                  </div>
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-2xl font-semibold group-hover:text-[#3b82f6] transition-colors">
+                    {item.name}
+                  </h3>
+                  <span className="text-2xl font-bold text-[#3b82f6]">{item.price}</span>
                 </div>
+                <p className="text-slate-400 leading-relaxed">{item.description}</p>
               </div>
             ))}
           </div>
 
           <div className="mt-12 text-center">
             <p className="text-slate-500 text-sm">
-              * All drinks available hot, iced, or blended. Oat, almond, and soy milk available +$0.75
+              All drinks available hot, iced, or blended • Dairy-free alternatives available
             </p>
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 px-4">
-        <div className="max-w-4xl mx-auto">
+      <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Visit <span className="text-[#3b82f6]">Us</span></h2>
-            <p className="text-slate-400 text-lg">Start your voyage today</p>
+            <h2 className="text-4xl sm:text-5xl font-bold mb-4">Find <span className="text-[#3b82f6]">Us</span></h2>
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+              Start your coffee journey today. We can't wait to welcome you aboard.
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Address Card */}
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 text-center md:text-left hover:border-[#3b82f6]/50 transition-all duration-300">
-              <div className="w-14 h-14 bg-[#3b82f6]/20 rounded-full flex items-center justify-center mb-6 mx-auto md:mx-0">
-                <svg className="w-7 h-7 text-[#3b82f6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Location</h3>
-              <p className="text-slate-400 leading-relaxed">
-                247 Roast Avenue<br />
-                Portland, OR 97201<br />
-                United States
-              </p>
-              <div className="mt-6 pt-6 border-t border-slate-700">
-                <p className="text-sm text-slate-500">
-                  <span className="text-[#3b82f6] font-medium">Hours:</span><br />
-                  Mon-Fri: 6AM - 8PM<br />
-                  Sat-Sun: 7AM - 9PM
-                </p>
-              </div>
-            </div>
-
-            {/* Email Card */}
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 text-center md:text-left hover:border-[#3b82f6]/50 transition-all duration-300">
-              <div className="w-14 h-14 bg-[#3b82f6]/20 rounded-full flex items-center justify-center mb-6 mx-auto md:mx-0">
-                <svg className="w-7 h-7 text-[#3b82f6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Get In Touch</h3>
-              <a 
-                href="mailto:hello@beanvoyage.coffee" 
-                className="text-[#3b82f6] hover:text-blue-400 transition-colors text-lg break-all"
-              >
-                hello@beanvoyage.coffee
-              </a>
-              <p className="text-slate-400 mt-4">
-                Questions about catering, wholesale, or just want to chat about coffee? We'd love to hear from you.
-              </p>
-              <div className="mt-6 pt-6 border-t border-slate-700 flex justify-center md:justify-start gap-4">
-                <a href="#" className="w-10 h-10 bg-slate-700 hover:bg-[#3b82f6] rounded-full flex items-center justify-center transition-colors">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="space-y-8">
+              <div className="bg-slate-800/80 border border-slate-700 rounded-2xl p-8">
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-[#3b82f6]/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-[#3b82f6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold mb
