@@ -8,7 +8,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState('home');
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-slate-900 text-white">
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
